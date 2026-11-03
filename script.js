@@ -4,6 +4,13 @@ const nav = document.querySelector('.site-nav');
 
 window.addEventListener('scroll', () => {
   header.classList.toggle('scrolled', window.scrollY > 20);
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  document.documentElement.style.setProperty('--scroll', `${total > 0 ? (window.scrollY / total) * 100 : 0}%`);
+}, { passive: true });
+
+window.addEventListener('pointermove', event => {
+  document.documentElement.style.setProperty('--pointer-x', `${event.clientX}px`);
+  document.documentElement.style.setProperty('--pointer-y', `${event.clientY}px`);
 }, { passive: true });
 
 navToggle.addEventListener('click', () => {
@@ -27,6 +34,20 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.12 });
 
 document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
+
+if (window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.querySelectorAll('[data-tilt]').forEach(element => {
+    element.addEventListener('pointermove', event => {
+      const bounds = element.getBoundingClientRect();
+      const rotateY = ((event.clientX - bounds.left) / bounds.width - .5) * 5;
+      const rotateX = ((event.clientY - bounds.top) / bounds.height - .5) * -5;
+      element.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+    element.addEventListener('pointerleave', () => {
+      element.style.transform = '';
+    });
+  });
+}
 
 const timeNode = document.querySelector('#local-time');
 const yearNode = document.querySelector('#year');
