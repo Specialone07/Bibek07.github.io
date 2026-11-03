@@ -28,16 +28,6 @@ const observer = new IntersectionObserver(entries => {
 
 document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
 
-const filterButtons = document.querySelectorAll('.filter-button');
-const repos = document.querySelectorAll('.repo-row');
-
-filterButtons.forEach(button => button.addEventListener('click', () => {
-  filterButtons.forEach(item => item.classList.remove('active'));
-  button.classList.add('active');
-  const filter = button.dataset.filter;
-  repos.forEach(repo => repo.classList.toggle('hidden', filter !== 'all' && repo.dataset.category !== filter));
-}));
-
 const timeNode = document.querySelector('#local-time');
 const yearNode = document.querySelector('#year');
 
